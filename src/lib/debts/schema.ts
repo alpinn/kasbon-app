@@ -1,11 +1,11 @@
 import { z } from "zod";
 
-export const MAX_AMOUNT = 1_000_000_000_000_000;
+export const MAX_AMOUNT = 1_000_000_000_000;
 
 export const debtTypes = ["owed_to_me", "i_owe"] as const;
 
 const numericString = (value: unknown) =>
-  typeof value === "string" && value.trim() !== "" ? Number(value) : value;
+  typeof value === "string" && /^\d+$/.test(value.trim()) ? Number(value) : value;
 
 const blankToNull = (value: unknown) =>
   typeof value === "string" && value.trim() === "" ? null : value;

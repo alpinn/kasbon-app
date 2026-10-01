@@ -1,8 +1,7 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { invalidInput, jsonError, requireUser, serverError } from "@/lib/api";
+import { invalidInput, jsonError, readJson, requireUser, serverError } from "@/lib/api";
 import { debtId, updateDebt } from "@/lib/debts/schema";
-import type { Debt } from "@/lib/debts/schema";
 
 type Context = { params: Promise<{ id: string }> };
 
@@ -15,31 +14,19 @@ export async function PATCH(request: NextRequest, { params }: Context) {
   const id = debtId.safeParse((await params).id);
   if (!id.success) return invalidInput(id.error);
 
-  let body: unknown;
-  try {
-    body = await request.json();
-  } catch {
-    return jsonError(400, "Format data nggak valid");
-  }
+  const json = await readJson(request);
+  if (json instanceof Response) return json;
 
-  const parsed = updateDebt.safeParse(body);
+  const parsed = updateDebt.safeParse(json.body);
   if (!parsed.success) return invalidInput(parsed.error);
   const { settled, ...fields } = parsed.data;
 
-  const { data: current, error: readError } = await auth.supabase
-    .from("debts")
-    .select("*")
-    .eq("id", id.data)
-    .maybeSingle();
-  if (readError) return serverError(readError);
-  if (!current) return notFound();
-
-  const patch: Partial<Debt> = { ...fields };
-  if (settled === false) patch.settled_at = null;
-  if (settled === true && current.settled_at === null) {
-    patch.settled_at = new Date().toISOString();
-  }
-  if (Object.keys(patch).length === 0) return NextResponse.json({ data: current });
+  const patch = {
+    ...fields,
+    ...(settled !== undefined && {
+      settled_at: settled ? new Date().toISOString() : null,
+    }),
+  };
 
   const { data, error } = await auth.supabase
     .from("debts")

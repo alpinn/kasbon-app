@@ -1,6 +1,6 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { invalidInput, jsonError, requireUser, serverError } from "@/lib/api";
+import { invalidInput, readJson, requireUser, serverError } from "@/lib/api";
 import { debtInput, listQuery } from "@/lib/debts/schema";
 
 const SORTS = {
@@ -10,7 +10,8 @@ const SORTS = {
   amount_asc: { column: "amount", ascending: true },
 } as const;
 
-const escapeLike = (value: string) => value.replace(/[\\%_]/g, "\\$&");
+const escapeRegex = (value: string) =>
+  value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 export async function GET(request: NextRequest) {
   const auth = await requireUser();
@@ -26,7 +27,7 @@ export async function GET(request: NextRequest) {
   if (status === "unpaid") query = query.is("settled_at", null);
   if (status === "paid") query = query.not("settled_at", "is", null);
   if (type !== "all") query = query.eq("type", type);
-  if (q) query = query.ilike("counterpart_name", `%${escapeLike(q)}%`);
+  if (q) query = query.filter("counterpart_name", "imatch", escapeRegex(q));
 
   const { column, ascending } = SORTS[sort];
   query = query.order(column, { ascending });
@@ -43,19 +44,15 @@ export async function POST(request: NextRequest) {
   const auth = await requireUser();
   if (auth instanceof Response) return auth;
 
-  let body: unknown;
-  try {
-    body = await request.json();
-  } catch {
-    return jsonError(400, "Format data nggak valid");
-  }
+  const json = await readJson(request);
+  if (json instanceof Response) return json;
 
-  const parsed = debtInput.safeParse(body);
+  const parsed = debtInput.safeParse(json.body);
   if (!parsed.success) return invalidInput(parsed.error);
 
   const { data, error } = await auth.supabase
     .from("debts")
-    .insert({ ...parsed.data, user_id: auth.user.id })
+    .insert(parsed.data)
     .select()
     .single();
   if (error) return serverError(error);
