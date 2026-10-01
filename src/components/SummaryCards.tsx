@@ -22,24 +22,24 @@ export default function SummaryCards({
   return (
     <section
       aria-label="Ringkasan"
-      className="grid grid-cols-2 gap-3 sm:grid-cols-3"
+      className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3"
     >
       <div className="rounded-card border border-line bg-surface p-4 shadow-card">
         <p className="text-sm text-ink-muted">Total dihutang ke saya</p>
-        <p className="mt-1 text-lg font-semibold tracking-tight text-positive tabular-nums sm:text-2xl">
+        <p className="mt-1 text-xl font-semibold tracking-tight whitespace-nowrap text-positive tabular-nums lg:text-2xl">
           {formatRupiah(owed)}
         </p>
       </div>
       <div className="rounded-card border border-line bg-surface p-4 shadow-card">
         <p className="text-sm text-ink-muted">Total saya hutang</p>
-        <p className="mt-1 text-lg font-semibold tracking-tight text-negative tabular-nums sm:text-2xl">
+        <p className="mt-1 text-xl font-semibold tracking-tight whitespace-nowrap text-negative tabular-nums lg:text-2xl">
           {formatRupiah(owe)}
         </p>
       </div>
-      <div className="col-span-2 rounded-card border border-line bg-surface p-4 shadow-card sm:col-span-1">
+      <div className="rounded-card border border-line bg-surface p-4 shadow-card sm:col-span-2 lg:col-span-1">
         <p className="text-sm text-ink-muted">Net</p>
         <p
-          className={`mt-1 text-2xl font-semibold tracking-tight tabular-nums ${tone}`}
+          className={`mt-1 text-xl font-semibold tracking-tight whitespace-nowrap tabular-nums lg:text-2xl ${tone}`}
         >
           {formatRupiah(net)}
         </p>

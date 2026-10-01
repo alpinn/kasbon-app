@@ -10,7 +10,7 @@ function groupByPerson(debts: Debt[]) {
     const key = debt.counterpart_name.trim().toLocaleLowerCase("id-ID");
     groups.set(key, [...(groups.get(key) ?? []), debt]);
   }
-  return [...groups.values()];
+  return [...groups];
 }
 
 export default function DebtGroupList({
@@ -20,7 +20,7 @@ export default function DebtGroupList({
 }: { debts: Debt[]; pending: string[] } & DebtActions) {
   return (
     <ul className="space-y-3">
-      {groupByPerson(debts).map((entries) => {
+      {groupByPerson(debts).map(([person, entries]) => {
         const open = entries.filter((d) => d.settled_at === null);
         const net = open.reduce(
           (sum, d) => sum + (d.type === "owed_to_me" ? d.amount : -d.amount),
@@ -42,7 +42,7 @@ export default function DebtGroupList({
               : "text-ink-muted";
 
         return (
-          <li key={entries[0].id}>
+          <li key={person}>
             <details className="group rounded-card border border-line bg-surface shadow-card">
               <summary className="flex min-h-11 cursor-pointer list-none items-center gap-3 rounded-card p-4 [&::-webkit-details-marker]:hidden">
                 <ChevronDown

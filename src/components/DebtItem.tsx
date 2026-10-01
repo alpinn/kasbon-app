@@ -10,7 +10,7 @@ import {
   Undo2,
 } from "lucide-react";
 import type { Debt } from "@/lib/debts/schema";
-import { formatRelativeDate, formatRupiah } from "@/lib/format";
+import { formatFullDate, formatRelativeDate, formatRupiah } from "@/lib/format";
 
 export type DebtActions = {
   onToggle: (debt: Debt) => void;
@@ -78,7 +78,9 @@ export default function DebtItem({
         </span>
         <span className="inline-flex items-center gap-1 text-ink-muted">
           <CalendarDays className="size-3.5" aria-hidden="true" />
-          <time dateTime={date}>{formatRelativeDate(date)}</time>
+          <time dateTime={date} title={formatFullDate(date)}>
+            {formatRelativeDate(date)}
+          </time>
         </span>
       </div>
 

@@ -50,7 +50,7 @@ export default function Dashboard() {
     setPending((ids) => [...ids, id]);
     try {
       await action();
-      all.refetch();
+      await all.refetch();
       notify(done, "success");
     } catch (error) {
       notify(
@@ -66,7 +66,7 @@ export default function Dashboard() {
     const debt = form?.debt;
     if (debt) await list.update(debt.id, input);
     else await list.create(input);
-    all.refetch();
+    await all.refetch();
     setForm(null);
     notify(debt ? "Perubahan disimpan" : "Catatan disimpan", "success");
   }
@@ -154,7 +154,7 @@ export default function Dashboard() {
               aria-busy={list.loading}
               className={`transition-opacity duration-150 ${list.loading && list.data.length > 0 ? "opacity-60" : ""}`}
             >
-              {list.loading && list.data.length === 0 ? (
+              {(list.loading || all.loading) && list.data.length === 0 ? (
                 <ListSkeleton />
               ) : list.data.length === 0 ? (
                 <EmptyState

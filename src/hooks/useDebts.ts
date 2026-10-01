@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type {
   Debt,
   DebtInput,
@@ -44,6 +44,7 @@ export function useDebts(filters: Partial<ListQuery> = {}) {
   const { status, type, q, sort } = filters;
   const [tick, setTick] = useState(0);
   const [result, setResult] = useState<Result | null>(null);
+  const waiters = useRef<(() => void)[]>([]);
 
   const params = new URLSearchParams();
   if (status) params.set("status", status);
@@ -56,8 +57,14 @@ export function useDebts(filters: Partial<ListQuery> = {}) {
   useEffect(() => {
     const controller = new AbortController();
     const key = keyOf(url, tick);
+    const queue = waiters.current;
+    const mine = queue.splice(0);
+    const settle = () => mine.splice(0).forEach((resolve) => resolve());
     request<Debt[]>(url, { signal: controller.signal })
-      .then((data) => setResult({ key, data, error: null }))
+      .then((data) => {
+        setResult({ key, data, error: null });
+        settle();
+      })
       .catch((error: unknown) => {
         if (controller.signal.aborted) return;
         setResult({
@@ -65,15 +72,23 @@ export function useDebts(filters: Partial<ListQuery> = {}) {
           data: [],
           error: error instanceof Error ? error.message : NETWORK_ERROR,
         });
+        settle();
       });
-    return () => controller.abort();
+    return () => {
+      controller.abort();
+      queue.push(...mine);
+    };
   }, [url, tick]);
 
-  const refetch = () => setTick((value) => value + 1);
+  const refetch = () =>
+    new Promise<void>((resolve) => {
+      waiters.current.push(resolve);
+      setTick((value) => value + 1);
+    });
 
   const mutate = async <T>(target: string, init: RequestInit) => {
     const data = await request<T>(target, init);
-    refetch();
+    await refetch();
     return data;
   };
 

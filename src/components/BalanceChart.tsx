@@ -37,14 +37,16 @@ export default function BalanceChart({
 }) {
   const max = Math.max(owed, owe);
   return (
-    <section
-      role="img"
-      aria-label={`Perbandingan: dihutang ke saya ${formatRupiah(owed)}, saya hutang ${formatRupiah(owe)}`}
-      className="space-y-4 rounded-card border border-line bg-surface p-4 shadow-card"
-    >
+    <section className="space-y-4 rounded-card border border-line bg-surface p-4 shadow-card">
       <h2 className="text-sm font-semibold">Perbandingan</h2>
-      <Bar label="Dihutang ke saya" value={owed} max={max} fill="bg-positive" />
-      <Bar label="Saya hutang" value={owe} max={max} fill="bg-negative" />
+      <div
+        role="img"
+        aria-label={`Perbandingan: dihutang ke saya ${formatRupiah(owed)}, saya hutang ${formatRupiah(owe)}`}
+        className="space-y-4"
+      >
+        <Bar label="Dihutang ke saya" value={owed} max={max} fill="bg-positive" />
+        <Bar label="Saya hutang" value={owe} max={max} fill="bg-negative" />
+      </div>
     </section>
   );
 }
