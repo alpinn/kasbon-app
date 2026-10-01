@@ -26,7 +26,7 @@ Catat utang piutang pribadi: siapa hutang berapa ke kamu, kamu hutang berapa ke 
 ### Library tambahan
 
 - **Zod.** Validasi form dijalankan di client dan di server, dan dua-duanya pakai satu skema yang sama (`src/lib/debts/schema.ts`). Pesan error-nya dalam Bahasa Indonesia dan type `DebtInput` diturunkan dari skema itu, jadi aturan validasi client dan server tidak bisa beda.
-- **Supabase CLI** (devDependency). Dipakai untuk `db push` migration dari `supabase/migrations/`, supaya skema dan RLS ter-versi di repo, bukan diklik manual di dashboard.
+- **Supabase CLI** (devDependency). Dipakai untuk `db push` migration dari `supabase/migrations/`, supaya skema dan RLS ter-versi di repo, bukan diklik manual di dashboard. Versinya di-pin ke 2.118.0, bukan 2.119.0 yang lebih baru, karena Yarn 4 mengkarantina versi yang dirilis kurang dari 24 jam (`npmMinimalAgeGate`). Fitur itu dibiarkan aktif sebagai perlindungan supply-chain.
 
 Sengaja **tidak** pakai library tanggal, chart, atau UI kit:
 - Format Rupiah memakai `Intl.NumberFormat('id-ID')`.
@@ -36,10 +36,11 @@ Sengaja **tidak** pakai library tanggal, chart, atau UI kit:
 
 ## Setup lokal
 
-Butuh Node.js 22+ dan project Supabase (free tier cukup).
+Butuh Node.js 22+ dan project Supabase (free tier cukup). Package manager-nya Yarn 4.18.1, di-pin lewat field `packageManager` dan dijalankan lewat Corepack (`corepack enable`). `.yarnrc.yml` memakai `nodeLinker: node-modules`, jadi tidak pakai Plug'n'Play.
 
 ```bash
-npm install
+corepack enable
+yarn install
 cp .env.example .env
 ```
 
@@ -55,9 +56,9 @@ Di Dashboard → Authentication → Sign In / Providers → Email, matikan **Con
 ### Migrate
 
 ```bash
-npx supabase login
-npx supabase link --project-ref <project-ref>
-npx supabase db push
+yarn supabase login
+yarn supabase link --project-ref <project-ref>
+yarn supabase db push
 ```
 
 Migration yang ada, berurutan:
@@ -67,16 +68,16 @@ Migration yang ada, berurutan:
 ### Jalankan
 
 ```bash
-npm run dev            # http://localhost:3000
-npm run build && npm start
+yarn dev               # http://localhost:3000
+yarn build && yarn start
 ```
 
 ### Cek
 
 ```bash
-npm run lint
-npx tsc --noEmit
-npm run check:format   # self-check format Rupiah & tanggal relatif
+yarn lint
+yarn tsc --noEmit
+yarn check:format      # self-check format Rupiah & tanggal relatif
 bash scripts/rls-test.sh   # tes kebocoran RLS lewat Supabase REST API langsung
 ```
 
@@ -366,7 +367,7 @@ Ada tiga lapis validasi:
 - **`formatRupiah(n)`** memakai `Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 })`, dengan non-breaking space diganti spasi biasa. Hasilnya `Rp 1.234.000`, dan untuk nilai negatif `-Rp 1.234.000`. Semua tampilan uang di app lewat fungsi ini.
 - **`formatRelativeDate(date)`** memakai `Intl.RelativeTimeFormat('id-ID')`. Selisihnya dihitung per hari kalender di zona waktu lokal. `numeric: 'auto'` hanya dipakai untuk selisih -1/0/+1 hari ("kemarin", "hari ini", "besok"), selain itu `numeric: 'always'` supaya -2 hari jadi "2 hari lalu" (bukan "kemarin dulu"). Teks " yang lalu" dinormalkan jadi " lalu", jadi hasilnya "3 hari lalu", "2 minggu lalu", "3 bulan lalu", dan untuk masa depan "dalam 5 hari".
 - **`formatFullDate(date)`** dipakai untuk atribut `title` di `<time>` pada item list (misalnya "15 Oktober 2026").
-- Self-check: `npm run check:format`.
+- Self-check: `yarn check:format`.
 
 ### Frontend
 
@@ -417,10 +418,10 @@ Token warna semantik ada di `globals.css`: `canvas`, `surface`, `ink`, `primary`
 
 | Cek | Perintah |
 |---|---|
-| Type check | `npx tsc --noEmit` |
-| Lint | `npm run lint` |
-| Build | `npm run build` |
-| Format Rupiah & tanggal | `npm run check:format` |
+| Type check | `yarn tsc --noEmit` |
+| Lint | `yarn lint` |
+| Build | `yarn build` |
+| Format Rupiah & tanggal | `yarn check:format` |
 | Kebocoran RLS, grant kolom, trigger | `bash scripts/rls-test.sh` |
 
 Alur manual yang perlu dicek:
@@ -436,6 +437,6 @@ Alur manual yang perlu dicek:
 ### Deploy
 
 1. Push repo ke GitHub, lalu import di Vercel.
-2. Isi env `NEXT_PUBLIC_SUPABASE_URL` dan `NEXT_PUBLIC_SUPABASE_ANON_KEY` di Vercel → Settings → Environment Variables.
+2. Isi env `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, dan `ENABLE_EXPERIMENTAL_COREPACK=1` di Vercel → Settings → Environment Variables. Env terakhir membuat Vercel memakai Yarn 4.18.1 dari field `packageManager`.
 3. Di Supabase → Authentication → URL Configuration, isi **Site URL** dengan domain Vercel.
-4. Pastikan kedua migration sudah di-push (`npx supabase db push`).
+4. Pastikan kedua migration sudah di-push (`yarn supabase db push`).
