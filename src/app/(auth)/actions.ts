@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/server";
 export type AuthState = { error?: string; email?: string };
 
 const credentials = z.object({
-  email: z.email("Format email nggak valid"),
+  email: z.email("Emailnya belum bener, cek lagi ya"),
   password: z.string().min(6, "Password minimal 6 karakter"),
 });
 
@@ -34,7 +34,7 @@ export async function login(
       email,
       error:
         error.code === "invalid_credentials"
-          ? "Email atau password salah"
+          ? "Email atau passwordnya salah, cek lagi ya"
           : "Gagal masuk, coba lagi ya",
     };
   }
@@ -52,9 +52,9 @@ export async function signup(
   const { data, error } = await supabase.auth.signUp(result.data);
   if (error) {
     const messages: Record<string, string> = {
-      user_already_exists: "Email ini sudah terdaftar, coba masuk aja",
-      email_exists: "Email ini sudah terdaftar, coba masuk aja",
-      weak_password: "Password terlalu lemah, coba yang lebih kuat",
+      user_already_exists: "Email ini udah terdaftar, masuk aja ya",
+      email_exists: "Email ini udah terdaftar, masuk aja ya",
+      weak_password: "Passwordnya terlalu gampang ditebak, coba yang lebih kuat",
     };
     return {
       email,
@@ -62,7 +62,7 @@ export async function signup(
     };
   }
   if (!data.session) {
-    return { email, error: "Cek emailmu untuk konfirmasi dulu ya" };
+    return { email, error: "Cek emailmu buat konfirmasi dulu ya" };
   }
   redirect("/");
 }

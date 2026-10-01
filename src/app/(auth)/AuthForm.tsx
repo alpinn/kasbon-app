@@ -9,7 +9,7 @@ const copy = {
   login: {
     title: "Masuk ke Kasbon",
     submit: "Masuk",
-    pending: "Memproses...",
+    pending: "Lagi masuk...",
     switchText: "Belum punya akun?",
     switchLink: "Daftar",
     switchHref: "/signup",
@@ -18,8 +18,8 @@ const copy = {
   signup: {
     title: "Bikin akun Kasbon",
     submit: "Daftar",
-    pending: "Memproses...",
-    switchText: "Sudah punya akun?",
+    pending: "Lagi mendaftar...",
+    switchText: "Udah punya akun?",
     switchLink: "Masuk",
     switchHref: "/login",
     autoComplete: "new-password",

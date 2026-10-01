@@ -125,7 +125,7 @@ export default function DebtFilters({
 
       <div
         role="group"
-        aria-label="Tampilan"
+        aria-label="Pilih tampilan catatan"
         className="inline-flex rounded-control border border-line-strong bg-surface p-0.5"
       >
         {views.map(({ grouped, label, icon: Icon }) => (

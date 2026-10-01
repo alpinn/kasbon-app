@@ -21,6 +21,6 @@ export function serverError(error: unknown) {
 export async function requireUser() {
   const supabase = await createClient();
   const { data } = await supabase.auth.getClaims();
-  if (!data?.claims) return jsonError(401, "Kamu belum login");
+  if (!data?.claims) return jsonError(401, "Kamu belum masuk, masuk dulu ya");
   return { supabase, user: { id: data.claims.sub } };
 }

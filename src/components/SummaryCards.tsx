@@ -14,9 +14,9 @@ export default function SummaryCards({
   const NetIcon = net > 0 ? TrendingUp : net < 0 ? TrendingDown : Equal;
   const caption =
     net > 0
-      ? "Kamu lebih banyak dipinjami"
+      ? "Lebih banyak yang hutang ke kamu"
       : net < 0
-        ? "Kamu lebih banyak berhutang"
+        ? "Kamu lebih banyak hutang"
         : "Impas, nggak ada selisih";
 
   return (

@@ -12,28 +12,28 @@ const blankToNull = (value: unknown) =>
 
 export const debtInput = z.object(
   {
-    type: z.enum(debtTypes, { error: "Pilih jenis catatan dulu" }),
+    type: z.enum(debtTypes, { error: "Pilih tipenya dulu ya" }),
     counterpart_name: z
-      .string({ error: "Nama wajib diisi" })
+      .string({ error: "Isi nama orangnya dulu ya" })
       .trim()
-      .min(1, "Nama wajib diisi")
-      .max(100, "Nama maksimal 100 karakter"),
+      .min(1, "Isi nama orangnya dulu ya")
+      .max(100, "Namanya kepanjangan, maksimal 100 karakter"),
     amount: z.preprocess(
       numericString,
       z
-        .number({ error: "Jumlah harus berupa angka" })
-        .int("Jumlah harus bilangan bulat")
-        .gt(0, "Jumlah harus lebih dari 0")
-        .max(MAX_AMOUNT, "Jumlah terlalu besar"),
+        .number({ error: "Jumlahnya harus berupa angka" })
+        .int("Jumlahnya harus bilangan bulat, tanpa koma")
+        .gt(0, "Jumlahnya harus lebih dari 0")
+        .max(MAX_AMOUNT, "Jumlahnya terlalu besar"),
     ),
     due_date: z.preprocess(
       blankToNull,
-      z.iso.date({ error: "Format tanggal harus YYYY-MM-DD" }).nullish(),
+      z.iso.date({ error: "Tanggalnya nggak valid (format YYYY-MM-DD)" }).nullish(),
     ),
     note: z
-      .string({ error: "Catatan harus berupa teks" })
+      .string({ error: "Catatannya harus berupa teks" })
       .trim()
-      .max(200, "Catatan maksimal 200 karakter")
+      .max(200, "Catatannya kepanjangan, maksimal 200 karakter")
       .transform((value) => (value === "" ? null : value))
       .nullish(),
   },
@@ -42,7 +42,7 @@ export const debtInput = z.object(
 
 export const updateDebt = debtInput
   .partial()
-  .extend({ settled: z.boolean({ error: "Status lunas harus true atau false" }).optional() })
+  .extend({ settled: z.boolean({ error: "Status lunas cuma boleh true atau false" }).optional() })
   .refine((value) => Object.values(value).some((v) => v !== undefined), {
     error: "Nggak ada data yang diubah",
   });
@@ -52,7 +52,7 @@ export const listQuery = z.object({
     .enum(["all", "unpaid", "paid"], { error: "Status nggak valid" })
     .default("all"),
   type: z
-    .enum(["all", ...debtTypes], { error: "Jenis nggak valid" })
+    .enum(["all", ...debtTypes], { error: "Tipe nggak valid" })
     .default("all"),
   q: z.string().trim().max(100, "Pencarian maksimal 100 karakter").optional(),
   sort: z

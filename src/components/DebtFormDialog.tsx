@@ -110,7 +110,7 @@ export default function DebtFormDialog({
         <button
           type="button"
           onClick={onClose}
-          aria-label="Tutup"
+          aria-label="Tutup form"
           className="-mr-2 flex size-11 items-center justify-center rounded-control text-ink-muted hover:bg-surface-muted"
         >
           <X className="size-5" aria-hidden="true" />
@@ -194,9 +194,9 @@ export default function DebtFormDialog({
 
         <Field
           id="debt-note"
-          label="Catatan (opsional)"
+          label="Catatan"
           error={errors.note?.[0]}
-          hint={`${note.length}/${NOTE_MAX}`}
+          hint={`Opsional · ${note.length}/${NOTE_MAX}`}
         >
           <textarea
             id="debt-note"

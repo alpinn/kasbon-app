@@ -68,14 +68,14 @@ export default function Dashboard() {
     else await list.create(input);
     all.refetch();
     setForm(null);
-    notify(debt ? "Catatan diperbarui" : "Catatan tersimpan", "success");
+    notify(debt ? "Perubahan disimpan" : "Catatan disimpan", "success");
   }
 
   const toggle = (debt: Debt) =>
     run(
       debt.id,
       () => list.settle(debt.id, debt.settled_at === null),
-      debt.settled_at === null ? "Ditandai lunas" : "Status lunas dibatalkan",
+      debt.settled_at === null ? "Udah ditandai lunas" : "Balik jadi belum lunas",
     );
 
   async function confirmDelete() {
@@ -109,7 +109,7 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6">
-      <h1 className="sr-only">Ringkasan utang dan piutang</h1>
+      <h1 className="sr-only">Ringkasan hutang-piutangmu</h1>
 
       {summaryLoading ? (
         <SummarySkeleton />
@@ -141,8 +141,8 @@ export default function Dashboard() {
           <EmptyState
             icon={HandCoins}
             title="Belum ada catatan"
-            description="Catat utang atau piutang pertamamu, biar nggak ada yang kelupaan."
-            action={{ label: "Catat sekarang", icon: Plus, onClick: () => setForm({}) }}
+            description="Mulai catat siapa hutang ke siapa, biar nggak ada yang kelupaan."
+            action={{ label: "Catat yang pertama", icon: Plus, onClick: () => setForm({}) }}
           />
         ) : (
           <>
@@ -159,7 +159,7 @@ export default function Dashboard() {
               ) : list.data.length === 0 ? (
                 <EmptyState
                   icon={SearchX}
-                  title="Nggak ada hasil"
+                  title="Nggak ketemu"
                   description="Nggak ada catatan yang cocok sama filter atau pencarianmu."
                   action={{
                     label: "Reset filter",

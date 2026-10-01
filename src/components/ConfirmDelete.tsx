@@ -26,7 +26,7 @@ export default function ConfirmDelete({
           </h2>
           <p className="mt-1 text-sm break-words text-ink-muted">
             Catatan {debt.counterpart_name} sebesar {formatRupiah(debt.amount)}{" "}
-            bakal hilang dan nggak bisa dikembalikan.
+            bakal hilang dan nggak bisa dibalikin.
           </p>
         </div>
       </div>

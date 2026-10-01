@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Kasbon",
-  description: "Catat utang dan piutang dengan rapi",
+  description: "Catat hutang-piutangmu, biar nggak ada yang kelupaan",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
