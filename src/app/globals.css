@@ -1,26 +1,150 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  color-scheme: light;
+  --canvas: #f4f5f8;
+  --surface: #ffffff;
+  --surface-muted: #eceef3;
+  --line: #d9dde6;
+  --line-strong: #7d8698;
+  --ink: #151a23;
+  --ink-muted: #566175;
+  --primary: #3730a3;
+  --primary-hover: #312e81;
+  --primary-soft: #eef2ff;
+  --on-primary: #ffffff;
+  --ring: #4f46e5;
+  --positive: #15803d;
+  --positive-soft: #dcfce7;
+  --negative: #b91c1c;
+  --negative-soft: #fee2e2;
+  --negative-solid: #b91c1c;
+  --warning: #92400e;
+  --warning-soft: #fef3c7;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    color-scheme: dark;
+    --canvas: #0e1116;
+    --surface: #171b22;
+    --surface-muted: #1f242d;
+    --line: #2b313c;
+    --line-strong: #6f7a8e;
+    --ink: #e8ebf1;
+    --ink-muted: #9ba6b8;
+    --primary: #a5b4fc;
+    --primary-hover: #c7d2fe;
+    --primary-soft: #232a4d;
+    --on-primary: #0e1116;
+    --ring: #a5b4fc;
+    --positive: #4ade80;
+    --positive-soft: #14301f;
+    --negative: #f87171;
+    --negative-soft: #3a1618;
+    --negative-solid: #dc2626;
+    --warning: #fbbf24;
+    --warning-soft: #3a2c0d;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-soft: var(--primary-soft);
+  --color-on-primary: var(--on-primary);
+  --color-ring: var(--ring);
+  --color-positive: var(--positive);
+  --color-positive-soft: var(--positive-soft);
+  --color-negative: var(--negative);
+  --color-negative-soft: var(--negative-soft);
+  --color-negative-solid: var(--negative-solid);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --radius-control: 0.75rem;
+  --radius-card: 1rem;
+  --shadow-card: 0 1px 2px rgb(16 24 40 / 0.06), 0 1px 3px rgb(16 24 40 / 0.04);
+  --shadow-sheet: 0 -8px 32px rgb(0 0 0 / 0.18);
+}
+
+@layer base {
+  body {
+    background: var(--canvas);
+    color: var(--ink);
+    font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  body:has(dialog[open]) {
+    overflow: hidden;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-control px-4 text-sm font-medium whitespace-nowrap transition-colors duration-150 disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  .btn-primary {
+    @apply bg-primary text-on-primary hover:bg-primary-hover active:bg-primary-hover;
+  }
+
+  .btn-secondary {
+    @apply border border-line-strong bg-surface text-ink hover:bg-surface-muted active:bg-surface-muted;
+  }
+
+  .btn-danger {
+    @apply bg-negative-solid text-white hover:brightness-90 active:brightness-90;
+  }
+
+  .field {
+    @apply min-h-11 w-full rounded-control border border-line-strong bg-surface px-3 text-base text-ink transition-colors duration-150 placeholder:text-ink-muted aria-[invalid=true]:border-negative;
+  }
+
+  .sheet {
+    @apply m-0 mt-auto max-h-none w-full max-w-none overflow-hidden rounded-t-2xl border border-line bg-surface p-0 text-ink shadow-sheet sm:m-auto sm:max-w-md sm:rounded-2xl;
+  }
+
+  .sheet::backdrop {
+    background: rgb(0 0 0 / 0.5);
+  }
+
+  .sheet[open] {
+    animation: sheet-in 200ms ease-out;
+  }
+
+  .skeleton {
+    @apply animate-pulse rounded-control bg-surface-muted;
+  }
+}
+
+@keyframes sheet-in {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
