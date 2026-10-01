@@ -1,5 +1,6 @@
-import { LogOut, Wallet } from "lucide-react";
+import { Wallet } from "lucide-react";
 import { logout } from "@/app/(auth)/actions";
+import LogoutButton from "./LogoutButton";
 
 export default function AppHeader({ email }: { email?: string }) {
   return (
@@ -18,10 +19,7 @@ export default function AppHeader({ email }: { email?: string }) {
             </span>
           )}
           <form action={logout}>
-            <button type="submit" className="btn btn-secondary">
-              <LogOut className="size-4" aria-hidden="true" />
-              Keluar
-            </button>
+            <LogoutButton />
           </form>
         </div>
       </div>
