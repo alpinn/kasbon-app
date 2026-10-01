@@ -44,7 +44,7 @@ export default function DebtGroupList({
         return (
           <li key={person}>
             <details className="group rounded-card border border-line bg-surface shadow-card">
-              <summary className="flex min-h-11 cursor-pointer list-none items-center gap-3 rounded-card p-4 [&::-webkit-details-marker]:hidden">
+              <summary className="flex min-h-11 cursor-default list-none items-center gap-3 rounded-card p-4 [&::-webkit-details-marker]:hidden">
                 <ChevronDown
                   className="size-5 shrink-0 text-ink-muted transition-transform duration-150 group-open:rotate-180"
                   aria-hidden="true"

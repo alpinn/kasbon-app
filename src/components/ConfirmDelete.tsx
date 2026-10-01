@@ -43,6 +43,7 @@ export default function ConfirmDelete({
           type="button"
           onClick={onConfirm}
           disabled={pending}
+          aria-busy={pending}
           className="btn btn-danger"
         >
           {pending ? (

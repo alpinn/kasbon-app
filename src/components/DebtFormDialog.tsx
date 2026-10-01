@@ -122,7 +122,7 @@ export default function DebtFormDialog({
           <legend className="mb-1.5 text-sm font-medium">Tipe</legend>
           <div className="grid grid-cols-2 gap-3">
             {typeOptions.map((option) => (
-              <label key={option.value} className="relative block">
+              <label key={option.value} className="relative block cursor-default">
                 <input
                   type="radio"
                   name="type"
@@ -222,7 +222,7 @@ export default function DebtFormDialog({
           <button type="button" onClick={onClose} className="btn btn-secondary">
             Batal
           </button>
-          <button type="submit" disabled={submitting} className="btn btn-primary">
+          <button type="submit" disabled={submitting} aria-busy={submitting} className="btn btn-primary">
             {submitting && (
               <LoaderCircle className="size-4 animate-spin" aria-hidden="true" />
             )}

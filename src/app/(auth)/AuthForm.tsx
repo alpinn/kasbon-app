@@ -86,6 +86,7 @@ export default function AuthForm({ mode }: { mode: "login" | "signup" }) {
           <button
             type="submit"
             disabled={pending}
+            aria-busy={pending}
             className="btn btn-primary w-full"
           >
             {pending && (
