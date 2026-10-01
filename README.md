@@ -103,7 +103,7 @@ Keputusan yang paling saya banggakan: **otorisasi sepenuhnya dipegang database, 
 
 ## Time spent
 
-_(isi jujur)_
+Sekitar 3 jam.
 
 ---
 
