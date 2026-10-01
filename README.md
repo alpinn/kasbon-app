@@ -96,6 +96,7 @@ Keputusan yang paling saya banggakan: **otorisasi sepenuhnya dipegang database, 
 
 ## Trade-off: kalau ada 1 hari lagi
 
+- **Bayar sebagian (cicilan).** Status sekarang cuma dua: lunas atau belum (`settled_at`), sesuai spek. Kalau Budi pinjam 150rb lalu bayar 50rb dulu, caranya baru edit jumlah jadi 100rb, dan riwayat bayarnya hilang. Rencananya tabel `payments` (`debt_id`, `amount`, `paid_at`) dengan RLS yang sama. Sisa utang = `amount − sum(payments)`, dan entry otomatis lunas saat sisanya 0. Alternatif yang lebih ringan: satu kolom `paid_amount` dengan `check (paid_amount <= amount)`, tapi tanpa riwayat.
 - **Summary dihitung di DB.** Total dan net dijumlahkan di client dari semua entry, dan `GET /api/debts` belum punya pagination. Karena itu summary ikut kena batas default 1000 row dari PostgREST: kalau ada lebih dari 1000 catatan, angkanya tidak lengkap. Solusinya: view/RPC `sum()` plus pagination di `GET /api/debts`.
 - **Test otomatis.** E2E Playwright untuk alur signup → catat → lunas → refresh, plus test API route. Sekarang yang ada baru self-check format dan skrip RLS.
 - **Polish UI.** Kursor di input jumlah lompat ke akhir saat mengedit angka di tengah, belum ada optimistic update, dan belum ada toggle tema manual (dark mode masih mengikuti sistem).
